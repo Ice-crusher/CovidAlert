@@ -18,7 +18,9 @@ class NetworkModule {
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         val okHttpBuilder = OkHttpClient.Builder()
-        okHttpBuilder.addInterceptor(HttpLoggingInterceptor())
+        okHttpBuilder.addInterceptor(
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        )
         return okHttpBuilder.build()
     }
 
@@ -31,7 +33,6 @@ class NetworkModule {
     }
 
     @Provides
-    @Named("auth_retrofit")
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://covid-alert-flask.herokuapp.com/")// TODO
