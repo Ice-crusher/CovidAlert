@@ -12,6 +12,7 @@ class PreferenceImpl @Inject constructor(
         const val PREF_FCM_TOKEN = "PREF_FCM_TOKEN"
         const val PREF_USER_EMAIL = "PREF_USER_EMAIL"
         const val PREF_USER_ID = "PREF_USER_ID"
+        const val PREF_WEB_CONTENT_LINK = "PREF_WEB_CONTENT_LINK"
     }
 
     override fun getFCMToken(): String {
@@ -41,6 +42,16 @@ class PreferenceImpl @Inject constructor(
     override fun setUserId(userId: String) {
         preferences.edit()
             .putString(PREF_USER_ID, userId)
+            .apply()
+    }
+
+    override fun getWebContentLink(): String {
+        return getEmptyStringOrValue(PREF_WEB_CONTENT_LINK)
+    }
+
+    override fun setWebContentLink(webLink: String) {
+        preferences.edit()
+            .putString(PREF_WEB_CONTENT_LINK, webLink)
             .apply()
     }
 

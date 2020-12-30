@@ -69,8 +69,7 @@ class NearbyService : Service() {
                     Gson().fromJson(String(message.content), NearbyMessageJson::class.java)
                 Log.d(TAG, "Found message: " + String(message.content))
 
-                Toast.makeText(this@NearbyService, "Found message!", Toast.LENGTH_SHORT).show()
-//                preferenceHelper.saveFoundMessage(message) // todo
+                Toast.makeText(this@NearbyService, "Found user near!", Toast.LENGTH_SHORT).show()
 
                 nearbyTouchCase.execute(NearbyTouchCase.Params(
                         credentialsRepoImpl.getUserId(),
@@ -95,7 +94,6 @@ class NearbyService : Service() {
                 Log.d(TAG, "Lost sight of message: " + String(message.content))
                 val nearbyMessage =
                     Gson().fromJson(String(message.content), NearbyMessageJson::class.java)
-//                preferenceHelper.removeLostMessage(message) // todo
             }
         }
 //        startPublishMessage(this, Message("Some string".toByteArray()))
@@ -152,7 +150,7 @@ class NearbyService : Service() {
             }
     }
 
-    fun startPublishMessage(context: Context, message: Message) {
+    fun startPublish(context: Context) {
         val s = Strategy.Builder()
 //            .setDistanceType(Strategy.DISTANCE_TYPE_EARSHOT)
             .build()
@@ -182,7 +180,6 @@ class NearbyService : Service() {
     }
 
     fun stopPublishMessage(context: Context, message: Message) {
-
         Nearby.getMessagesClient(context).unpublish(message)
             .addOnSuccessListener {
 //                Toast.makeText(BaseApp.instance, "Success unpublish message", Toast.LENGTH_SHORT).show()

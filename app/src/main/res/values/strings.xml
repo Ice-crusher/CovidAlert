@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CovidAlert</string>
+    <string name="text_log_in">Log in</string>
+    <string name="text_sick_dialog_yes">Yes, notify others</string>
+    <string name="text_sick_dialog_description">If so, keep quarantine and wish you good health! You can help other people you meet, just click "Yes" and they will receive a warning message!</string>
+    <string name="text_sick_dialog_title">Have you been diagnosed with COVID?</string>
+    <string name="text_cancel">Cancel</string>
 </resources>

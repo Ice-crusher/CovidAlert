@@ -10,5 +10,5 @@ data class UserJson(
     @SerializedName("fcmToken")
     val fcmToken: String,
     @SerializedName("mainWebSiteUrl")
-    val mainWebSiteUrl: String
+    val mainWebSiteUrl: String?
 )

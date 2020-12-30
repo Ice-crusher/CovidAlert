@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_content_link">"https://www.gov.pl/web/koronawirus/wiadomosci"</string>
+    <string name="default_web_content_host">"https://www.gov.pl"</string>
+</resources>

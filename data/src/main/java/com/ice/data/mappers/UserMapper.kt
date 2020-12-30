@@ -11,7 +11,7 @@ class UserMapper @Inject constructor() {
             email = userJson.email,
             userId = userJson.userId,
             fcmToken = userJson.fcmToken,
-            mainWebSiteUrl = userJson.mainWebSiteUrl
+            mainWebSiteUrl = userJson.mainWebSiteUrl ?: ""
         )
     }
 

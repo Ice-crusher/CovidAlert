@@ -11,4 +11,7 @@ interface PreferenceHelper {
     fun getUserId(): String
     fun setUserId(userId: String)
 
+    fun getWebContentLink(): String
+    fun setWebContentLink(webLink: String)
+
 }

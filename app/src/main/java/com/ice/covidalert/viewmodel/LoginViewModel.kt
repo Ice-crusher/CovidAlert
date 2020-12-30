@@ -47,7 +47,7 @@ class LoginViewModel @Inject constructor(
                         _isLoading.value = Event(false)
                     }
                 }, {
-                    Log.e(TAG, it.stackTrace.toString())
+                    Log.e(TAG, "Failed to prelogin", it)
                     _isSuccessLogin.value = Event(false)
                     _isLoading.value = Event(false)
                     _toastText.value = Event("You are logged out")
@@ -81,8 +81,6 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun loginCall(email: String, fcmToken: String) {
-        // todo show loading
-
         _isLoading.value = Event(true)
         loginUseCase.execute(LoginUseCase.Params(email, fcmToken))
             .subscribeOn(schedulers.io())
