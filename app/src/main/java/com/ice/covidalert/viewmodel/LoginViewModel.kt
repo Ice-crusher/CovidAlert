@@ -12,6 +12,7 @@ import com.ice.domain.repositories.CredentialsRepo
 import com.ice.domain.usecases.login.LoginUseCase
 import com.ice.domain.usecases.sick.SickUseCase
 import io.reactivex.disposables.CompositeDisposable
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
@@ -50,7 +51,12 @@ class LoginViewModel @Inject constructor(
                     Log.e(TAG, "Failed to prelogin", it)
                     _isSuccessLogin.value = Event(false)
                     _isLoading.value = Event(false)
-                    _toastText.value = Event("You are logged out")
+                    if (it is SocketTimeoutException) {
+                        _toastText.value = Event("Timeout...")
+                    } else {
+                        _toastText.value = Event("You are logged out!")
+                    }
+
                 }).let {
                     compositeDisposable.add(it)
                 }

@@ -2,7 +2,6 @@ package com.ice.data.preferences
 
 import android.content.SharedPreferences
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class PreferenceImpl @Inject constructor(
     var preferences: SharedPreferences
@@ -13,6 +12,7 @@ class PreferenceImpl @Inject constructor(
         const val PREF_USER_EMAIL = "PREF_USER_EMAIL"
         const val PREF_USER_ID = "PREF_USER_ID"
         const val PREF_WEB_CONTENT_LINK = "PREF_WEB_CONTENT_LINK"
+        const val PREF_GPS_INFO = "PREF_GPS_INFO"
     }
 
     override fun getFCMToken(): String {
@@ -52,6 +52,16 @@ class PreferenceImpl @Inject constructor(
     override fun setWebContentLink(webLink: String) {
         preferences.edit()
             .putString(PREF_WEB_CONTENT_LINK, webLink)
+            .apply()
+    }
+
+    override fun getLastGPSInfoJson(): String {
+        return getEmptyStringOrValue(PREF_GPS_INFO)
+    }
+
+    override fun setLastGPSInfoJson(gpsInfoJson: String) {
+        preferences.edit()
+            .putString(PREF_GPS_INFO, gpsInfoJson)
             .apply()
     }
 

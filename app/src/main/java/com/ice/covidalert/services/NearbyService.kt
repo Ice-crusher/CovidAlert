@@ -1,26 +1,35 @@
 package com.ice.covidalert.services
 
-import android.app.PendingIntent
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
+import android.graphics.Color
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.messages.*
+import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.ice.covidalert.rx.SchedulersProvider
-import com.ice.covidalert.viewmodel.MainViewModel
 import com.ice.data.models.NearbyMessageJson
 import com.ice.data.repo.CredentialsRepoImpl
 import com.ice.domain.usecases.nearbyTouch.NearbyTouchCase
-import com.ice.domain.usecases.sick.SickUseCase
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
-import javax.inject.Named
 
 class NearbyService : Service() {
 
@@ -28,7 +37,6 @@ class NearbyService : Service() {
 
 //    @Inject
 //    lateinit var preferenceHelper: PreferenceHelper
-
 
     @Inject
     lateinit var schedulers: SchedulersProvider
@@ -39,6 +47,10 @@ class NearbyService : Service() {
     @Inject
     lateinit var credentialsRepoImpl: CredentialsRepoImpl
 
+    var listener: NearbyServiceCallback? = null
+    private lateinit var locationCallback: LocationCallback
+    lateinit var fusedLocationClient: FusedLocationProviderClient
+    var locationRequest: LocationRequest? = null
 
     private val compositeDisposable = CompositeDisposable()
     // This is the object that receives interactions from clients.
@@ -62,6 +74,8 @@ class NearbyService : Service() {
         super.onCreate()
         AndroidInjection.inject(this)
 
+        setGPS()
+
         mMessageListener = object : MessageListener() {
             override fun onFound(message: Message) {
                 Log.d(TAG, "Found message: ${String(message.content)}")
@@ -70,16 +84,24 @@ class NearbyService : Service() {
                 Log.d(TAG, "Found message: " + String(message.content))
 
                 Toast.makeText(this@NearbyService, "Found user near!", Toast.LENGTH_SHORT).show()
+                val lastGPSInfo = credentialsRepoImpl.getLastGPSInfo()
 
-                nearbyTouchCase.execute(NearbyTouchCase.Params(
-                        credentialsRepoImpl.getUserId(),
-                        nearbyMessage.userId
-                    ))
+                nearbyTouchCase.execute(
+                    NearbyTouchCase.Params(
+                        myUserId = credentialsRepoImpl.getUserId(),
+                        geographicCoordinateX = lastGPSInfo?.geographicCoordinateX,
+                        geographicCoordinateY = lastGPSInfo?.geographicCoordinateY,
+                        opponentId = nearbyMessage.userId
+                    )
+                )
                     .subscribeOn(schedulers.io())
                     .observeOn(schedulers.ui())
                     .subscribe({
                         it?.let {
-                            Log.d(NearbyService::class.java.simpleName, "Success send nearbyTouch to the server!")
+                            Log.d(
+                                NearbyService::class.java.simpleName,
+                                "Success send nearbyTouch to the server!"
+                            )
                         }
                     }, {
                         it.printStackTrace()
@@ -96,9 +118,58 @@ class NearbyService : Service() {
                     Gson().fromJson(String(message.content), NearbyMessageJson::class.java)
             }
         }
-//        startPublishMessage(this, Message("Some string".toByteArray()))
-//        subscribe(this)
         Log.d(TAG, "onCreate() Service")
+    }
+
+    private fun setGPS() {
+        // clear GPS values from preferences
+        credentialsRepoImpl.setLastGPSInfo(null, null, System.currentTimeMillis())
+        // set gps requests
+        // set location callback
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    //  save to preferences
+                    credentialsRepoImpl.setLastGPSInfo(
+                        geographicCoordinateX = location.latitude.toFloat(),
+                        geographicCoordinateY = location.longitude.toFloat(),
+                        time = System.currentTimeMillis())
+//                    makeToast("accuracy: ${location.accuracy} - ${location.latitude}, ${location.longitude}")
+                    Log.d(TAG, "accuracy: ${location.accuracy} - ${location.latitude}, ${location.longitude}")
+                }
+            }
+        }
+        createLocationRequest()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        startLocationUpdates()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChanel()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChanel() {
+        val NOTIFICATION_CHANNEL_ID = "com.ice.covidalert"
+        val channelName = "Location"
+        val chan = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            channelName,
+            NotificationManager.IMPORTANCE_NONE
+        )
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val manager =
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        manager.createNotificationChannel(chan)
+        val notificationBuilder =
+            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notification: Notification = notificationBuilder.setOngoing(true)
+            .setContentTitle("Content title")
+            .setPriority(NotificationManager.IMPORTANCE_MIN)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build()
+        startForeground(2, notification)
     }
 
     fun subscribe(context: Context) {
@@ -133,6 +204,41 @@ class NearbyService : Service() {
             }
     }
 
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest.create()?.apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        locationRequest?.let {
+            val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(it)
+            val client: SettingsClient = LocationServices.getSettingsClient(this)
+            val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+            task.addOnFailureListener { exception ->
+                if (exception is ResolvableApiException){
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        listener?.showTurnOnGPSDialog(exception)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun startLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
+    }
+
+
     fun unubscribe(context: Context) {
         Log.d(TAG, "Unubscribing...")
         Nearby.getMessagesClient(context).unsubscribe(mMessageListener)
@@ -152,7 +258,6 @@ class NearbyService : Service() {
 
     fun startPublish(context: Context) {
         val s = Strategy.Builder()
-//            .setDistanceType(Strategy.DISTANCE_TYPE_EARSHOT)
             .build()
         val options = PublishOptions.Builder()
             .setStrategy(Strategy.BLE_ONLY)
@@ -179,43 +284,11 @@ class NearbyService : Service() {
             }
     }
 
-    fun stopPublishMessage(context: Context, message: Message) {
-        Nearby.getMessagesClient(context).unpublish(message)
-            .addOnSuccessListener {
-//                Toast.makeText(BaseApp.instance, "Success unpublish message", Toast.LENGTH_SHORT).show()
-//                preferenceHelper.removePublishMessage(message) // todo
-                Log.d(TAG, "Success unpublish message")
-            }
-            .addOnCanceledListener {
-//                Toast.makeText(BaseApp.instance, "Cancel unpublish message", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "Cancel unpublish message")
-            }
-            .addOnFailureListener {
-//                Toast.makeText(BaseApp.instance, "Failure unpublish message", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "Failure unpublish message")
-            }
-    }
-
-//    fun stopAllPublishMessage(context: Context) {
-//        val cachedMessages = ArrayList(preferenceHelper.getPublishMessages())
-//        for (item in cachedMessages) {
-//            Log.d(TAG, "Detected item: " + item.toString())
-//            stopPublishMessage(context, Message(item.toByteArray()))
-//        }
-////        val cachedMessagesSet = HashSet(cachedMessages)
-////        if (!cachedMessagesSet.contains(messageString)) {
-////            cachedMessages.add(0, String(message.content))
-////        }
-//
-//        // delete all from Preferences Published Messages
-//    }
-
     override fun onDestroy() {
         super.onDestroy()
 
         Log.d(TAG, "onDestroy() Service")
         unubscribe(applicationContext)
-//        stopPublishMessage()
         Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
     }
 
@@ -223,10 +296,7 @@ class NearbyService : Service() {
         return mBinder
     }
 
-//    private fun getPendingIntent(): PendingIntent {
-//        return PendingIntent.getBroadcast(
-//            this, 0, Intent(this, BeaconMessageReceiver::class.java),
-//            PendingIntent.FLAG_UPDATE_CURRENT
-//        )
-//    }
+    interface NearbyServiceCallback {
+        fun showTurnOnGPSDialog(exception: ResolvableApiException)
+    }
 }

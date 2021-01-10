@@ -14,4 +14,6 @@ interface PreferenceHelper {
     fun getWebContentLink(): String
     fun setWebContentLink(webLink: String)
 
+    fun getLastGPSInfoJson(): String
+    fun setLastGPSInfoJson(gpsInfoJson: String)
 }

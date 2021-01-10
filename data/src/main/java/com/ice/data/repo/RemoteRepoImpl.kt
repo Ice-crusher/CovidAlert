@@ -2,10 +2,8 @@ package com.ice.data.repo
 
 import com.google.gson.JsonObject
 import com.ice.data.apiservice.ApiService
-import com.ice.data.mappers.SickMapper
 import com.ice.data.mappers.UserMapper
 import com.ice.domain.models.UserModel
-import com.ice.domain.models.SickModel
 import com.ice.domain.repositories.RemoteRepo
 import io.reactivex.Single
 import javax.inject.Inject
@@ -21,9 +19,20 @@ class RemoteRepoImpl @Inject constructor(
         return apiService.sick(parameters)
     }
 
-    override fun nearbyTouch(myUserId: String, opponentId: String): Single<JsonObject> {
+    override fun nearbyTouch(
+        myUserId: String,
+        geographicCoordinateX: Float?,
+        geographicCoordinateY: Float?,
+        opponentId: String
+    ): Single<JsonObject> {
         val parameters = HashMap<String, String>()
         parameters["userId"] = myUserId
+        geographicCoordinateX?.let {
+            parameters["geographicCoordinateX"] =  it.toString()
+        }
+        geographicCoordinateY?.let {
+            parameters["geographicCoordinateY"] =  it.toString()
+        }
         parameters["opponentId"] = opponentId
         return apiService.nearbyTouch(parameters)
     }
