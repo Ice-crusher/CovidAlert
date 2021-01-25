@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:fontFamily="@font/montserrat_semi_bold"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="24dp"
         android:layout_marginBottom="8dp"
         android:text="Infected contacts history"
         android:textColor="@color/colorDarkGreen"
