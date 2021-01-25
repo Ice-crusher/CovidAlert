@@ -1,6 +1,7 @@
 package com.ice.domain.repositories
 
 import com.google.gson.JsonObject
+import com.ice.domain.models.HistoryModel
 import com.ice.domain.models.UserModel
 import io.reactivex.Single
 
@@ -15,5 +16,7 @@ interface RemoteRepo {
     ): Single<JsonObject>
 
     fun login(email: String, fcmToken: String): Single<UserModel>
+
+    fun history(userId: String): Single<HistoryModel>
 
 }

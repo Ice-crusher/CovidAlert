@@ -6,6 +6,7 @@ import com.ice.covidalert.di.ViewModelFactory
 import com.ice.covidalert.di.ViewModelKey
 import com.ice.covidalert.viewmodel.LoginViewModel
 import com.ice.covidalert.viewmodel.MainViewModel
+import com.ice.covidalert.viewmodel.MenuViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,6 +26,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel::class)
     abstract fun bindingLoginViewModel(viewModel: LoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MenuViewModel::class)
+    abstract fun bindingMenuViewModel(viewModel: MenuViewModel): ViewModel
 
 
 }

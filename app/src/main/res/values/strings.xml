@@ -7,4 +7,6 @@
     <string name="text_cancel">Cancel</string>
     <string name="settings">Settings</string>
     <string name="permission_denied_explanation">""Permission was denied, but is needed to collect GPS statistics while in use.</string>
+    <string name="fcm_notification_title">Uwaga!</string>
+    <string name="fcm_notification_body">Wcześniej spotkałeś osobę chorą na COVID-19. Jesteś w strefie ryzyka zakażenia. Uważaj na siebie!</string>
 </resources>

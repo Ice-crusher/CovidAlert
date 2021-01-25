@@ -2,7 +2,9 @@ package com.ice.data.repo
 
 import com.google.gson.JsonObject
 import com.ice.data.apiservice.ApiService
+import com.ice.data.mappers.HistoryMapper
 import com.ice.data.mappers.UserMapper
+import com.ice.domain.models.HistoryModel
 import com.ice.domain.models.UserModel
 import com.ice.domain.repositories.RemoteRepo
 import io.reactivex.Single
@@ -10,7 +12,8 @@ import javax.inject.Inject
 
 class RemoteRepoImpl @Inject constructor(
     private val apiService: ApiService,
-    private val userMapper: dagger.Lazy<UserMapper>
+    private val userMapper: dagger.Lazy<UserMapper>,
+    private val historyMapper: dagger.Lazy<HistoryMapper>
 ) : RemoteRepo {
 
     override fun sick(userId: String): Single<JsonObject> {
@@ -47,4 +50,10 @@ class RemoteRepoImpl @Inject constructor(
             }
     }
 
+    override fun history(userId: String): Single<HistoryModel> {
+        return apiService.history(userId)
+            .map {
+                historyMapper.get().toHistoryModel(it)
+            }
+    }
 }

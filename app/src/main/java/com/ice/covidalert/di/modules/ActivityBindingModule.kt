@@ -2,6 +2,7 @@ package com.ice.covidalert.di.modules
 
 import com.ice.covidalert.ui.main.LoginActivity
 import com.ice.covidalert.ui.main.MainActivity
+import com.ice.covidalert.ui.main.MenuActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -13,4 +14,7 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     internal abstract fun bindLoginScreenActivity(): LoginActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindMenuScreenActivity(): MenuActivity
 }
