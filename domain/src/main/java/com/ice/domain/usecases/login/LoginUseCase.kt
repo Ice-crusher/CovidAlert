@@ -11,13 +11,13 @@ class LoginUseCase @Inject constructor(
 ): SingleUseCase<LoginUseCase.Params, UserModel> {
     override fun execute(params: Params): Single<UserModel> {
         return apiRepo.login(
-            email = params.email,
+            secretValue = params.secretValue,
             fcmToken = params.fcmToken
         )
     }
 
     data class Params(
-        val email: String,
+        val secretValue: String,
         val fcmToken: String
     )
 }

@@ -9,7 +9,7 @@ class PreferenceImpl @Inject constructor(
 
     companion object {
         const val PREF_FCM_TOKEN = "PREF_FCM_TOKEN"
-        const val PREF_USER_EMAIL = "PREF_USER_EMAIL"
+        const val PREF_USER_SECRET_VALUE = "PREF_USER_SECRET_VALUE"
         const val PREF_USER_ID = "PREF_USER_ID"
         const val PREF_WEB_CONTENT_LINK = "PREF_WEB_CONTENT_LINK"
         const val PREF_GPS_INFO = "PREF_GPS_INFO"
@@ -25,13 +25,13 @@ class PreferenceImpl @Inject constructor(
             .apply()
     }
 
-    override fun getEmail(): String {
-        return getEmptyStringOrValue(PREF_USER_EMAIL)
+    override fun getSecretValue(): String {
+        return getEmptyStringOrValue(PREF_USER_SECRET_VALUE)
     }
 
-    override fun setEmail(email: String) {
+    override fun setSecretValue(secretValue: String) {
         preferences.edit()
-            .putString(PREF_USER_EMAIL, email)
+            .putString(PREF_USER_SECRET_VALUE, secretValue)
             .apply()
     }
 

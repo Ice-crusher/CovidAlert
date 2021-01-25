@@ -8,7 +8,7 @@ class UserMapper @Inject constructor() {
 
     fun toUserModel(userJson: UserJson): UserModel {
         return UserModel(
-            email = userJson.email,
+            secretValue = userJson.secretValue,
             userId = userJson.userId,
             fcmToken = userJson.fcmToken,
             mainWebSiteUrl = userJson.mainWebSiteUrl ?: ""

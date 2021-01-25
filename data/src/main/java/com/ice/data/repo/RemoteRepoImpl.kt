@@ -40,9 +40,9 @@ class RemoteRepoImpl @Inject constructor(
         return apiService.nearbyTouch(parameters)
     }
 
-    override fun login(email: String, fcmToken: String): Single<UserModel> {
+    override fun login(secretValue: String, fcmToken: String): Single<UserModel> {
         val parameters = HashMap<String, String>()
-        parameters["email"] = email
+        parameters["secretValue"] = secretValue
         parameters["fcmToken"] = fcmToken
         return apiService.login(parameters)
             .map {

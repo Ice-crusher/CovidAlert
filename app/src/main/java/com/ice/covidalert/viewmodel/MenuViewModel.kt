@@ -35,9 +35,7 @@ class MenuViewModel @Inject constructor(
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
             .subscribe({
-                if (it.history.isNotEmpty()) {
-                    _items.value = it.history as ArrayList<HistoryModel.HistoryItem>
-                }
+                _items.value = it.history as ArrayList<HistoryModel.HistoryItem>
             }, {
                 _items.value = ArrayList()
             }).let {

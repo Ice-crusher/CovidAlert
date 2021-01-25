@@ -5,8 +5,8 @@ interface PreferenceHelper {
     fun getFCMToken(): String
     fun setFCMToken(fcmToken: String)
 
-    fun getEmail(): String
-    fun setEmail(email: String)
+    fun getSecretValue(): String
+    fun setSecretValue(secretValue: String)
 
     fun getUserId(): String
     fun setUserId(userId: String)

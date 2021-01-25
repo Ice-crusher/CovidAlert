@@ -3,14 +3,11 @@ package com.ice.covidalert.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ice.covidalert.rx.SchedulersProvider
 import com.ice.data.events.Event
-import com.ice.domain.models.SickModel
 import com.ice.domain.repositories.CredentialsRepo
 import com.ice.domain.usecases.login.LoginUseCase
-import com.ice.domain.usecases.sick.SickUseCase
 import io.reactivex.disposables.CompositeDisposable
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -28,19 +25,21 @@ class LoginViewModel @Inject constructor(
         get() = _isSuccessLogin
 
     fun onCreate() {
-        if (credentialsRepo.getEmail().isNotEmpty()
+
+
+        if (credentialsRepo.getSecretValue().isNotEmpty()
             && credentialsRepo.getUserId().isNotEmpty()
             && credentialsRepo.getFCMToken().isNotEmpty()) {
             _isLoading.value = Event(true)
             loginUseCase.execute(
-                LoginUseCase.Params(credentialsRepo.getEmail(), credentialsRepo.getFCMToken())
+                LoginUseCase.Params(credentialsRepo.getSecretValue(), credentialsRepo.getFCMToken())
             )
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe({
                     it?.let {
                         Log.d(TAG, "Success Login Call!")
-                        credentialsRepo.setEmail(it.email)
+                        credentialsRepo.setSecretValue(it.secretValue)
                         credentialsRepo.setFCMToken(it.fcmToken)
                         credentialsRepo.setUserId(it.userId)
                         credentialsRepo.setWebLink(it.mainWebSiteUrl)
@@ -63,10 +62,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun login(email: String) {
+    fun login(secretValue: String) {
         var fcmToken = credentialsRepo.getFCMToken()
         if (fcmToken.isNotEmpty()) {
-            loginCall(email, fcmToken)
+            loginCall(secretValue, fcmToken)
         } else {
             Log.d(TAG, "TRY GET FCM TOKEN..")
 
@@ -81,20 +80,20 @@ class LoginViewModel @Inject constructor(
                 fcmToken = task.result.toString()
                 Log.d(TAG, "New Token is: $fcmToken")
                 credentialsRepo.setFCMToken(fcmToken)
-                loginCall(email, fcmToken)
+                loginCall(secretValue, fcmToken)
             }
         }
     }
 
-    private fun loginCall(email: String, fcmToken: String) {
+    private fun loginCall(secretValue: String, fcmToken: String) {
         _isLoading.value = Event(true)
-        loginUseCase.execute(LoginUseCase.Params(email, fcmToken))
+        loginUseCase.execute(LoginUseCase.Params(secretValue, fcmToken))
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
             .subscribe({
                 it?.let {
                     Log.d(TAG, "Success Login Call!")
-                    credentialsRepo.setEmail(it.email)
+                    credentialsRepo.setSecretValue(it.secretValue)
                     credentialsRepo.setFCMToken(it.fcmToken)
                     credentialsRepo.setUserId(it.userId)
                     credentialsRepo.setWebLink(it.mainWebSiteUrl)

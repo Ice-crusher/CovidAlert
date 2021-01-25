@@ -80,7 +80,6 @@ dependencies {
     // firebase
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //navigation
     implementation 'androidx.navigation:navigation-fragment:2.3.2'
