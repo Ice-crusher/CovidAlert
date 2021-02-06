@@ -15,7 +15,7 @@ interface RemoteRepo {
         opponentId: String
     ): Single<JsonObject>
 
-    fun login(secretValue: String, fcmToken: String): Single<UserModel>
+    fun login(email: String, instanceId: String, fcmToken: String): Single<UserModel>
 
     fun history(userId: String): Single<HistoryModel>
 

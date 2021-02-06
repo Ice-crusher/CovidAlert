@@ -1,9 +1,7 @@
-package com.ice.domain.usecases.sick
+package com.ice.domain.usecases
 
 import com.google.gson.JsonObject
-import com.ice.domain.models.SickModel
 import com.ice.domain.repositories.RemoteRepo
-import com.ice.domain.usecases.SingleUseCase
 import io.reactivex.Single
 import javax.inject.Inject
 

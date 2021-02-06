@@ -2,12 +2,10 @@ package com.ice.covidalert.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.ice.covidalert.rx.SchedulersProvider
 import com.ice.data.events.Event
-import com.ice.domain.models.SickModel
 import com.ice.domain.repositories.CredentialsRepo
-import com.ice.domain.usecases.sick.SickUseCase
+import com.ice.domain.usecases.SickUseCase
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 

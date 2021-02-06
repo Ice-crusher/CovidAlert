@@ -7,8 +7,8 @@ import com.ice.covidalert.rx.SchedulersProvider
 import com.ice.data.events.Event
 import com.ice.domain.models.HistoryModel
 import com.ice.domain.repositories.CredentialsRepo
-import com.ice.domain.usecases.history.HistoryUseCase
-import com.ice.domain.usecases.sick.SickUseCase
+import com.ice.domain.usecases.HistoryUseCase
+import com.ice.domain.usecases.SickUseCase
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 

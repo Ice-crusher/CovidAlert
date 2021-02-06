@@ -1,8 +1,7 @@
-package com.ice.domain.usecases.history
+package com.ice.domain.usecases
 
 import com.ice.domain.models.HistoryModel
 import com.ice.domain.repositories.RemoteRepo
-import com.ice.domain.usecases.SingleUseCase
 import io.reactivex.Single
 import javax.inject.Inject
 

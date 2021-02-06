@@ -26,7 +26,7 @@ import com.google.gson.Gson
 import com.ice.covidalert.rx.SchedulersProvider
 import com.ice.data.models.NearbyMessageJson
 import com.ice.data.repo.CredentialsRepoImpl
-import com.ice.domain.usecases.nearbyTouch.NearbyTouchCase
+import com.ice.domain.usecases.NearbyTouchCase
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject

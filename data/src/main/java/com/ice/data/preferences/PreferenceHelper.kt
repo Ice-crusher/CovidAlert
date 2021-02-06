@@ -5,8 +5,8 @@ interface PreferenceHelper {
     fun getFCMToken(): String
     fun setFCMToken(fcmToken: String)
 
-    fun getSecretValue(): String
-    fun setSecretValue(secretValue: String)
+    fun getEmail(): String
+    fun setEmail(email: String)
 
     fun getUserId(): String
     fun setUserId(userId: String)
@@ -16,4 +16,7 @@ interface PreferenceHelper {
 
     fun getLastGPSInfoJson(): String
     fun setLastGPSInfoJson(gpsInfoJson: String)
+
+    fun getInstanceId(): String
+    fun setInstanceId(instanceId: String)
 }

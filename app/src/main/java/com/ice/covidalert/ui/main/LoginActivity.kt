@@ -31,9 +31,9 @@ class LoginActivity : BaseActivity() {
         setContentView(view)
         viewModel = viewModelFactory.obtainViewModel(this)
 
-        view.editTextSecretValue.text = Editable.Factory.getInstance().newEditable("email1@gmail.com")
+        view.editTextEmail.text = Editable.Factory.getInstance().newEditable("email1@gmail.com")
         view.buttonLogIn.setOnClickListener {
-            viewModel.login(view.editTextSecretValue.text.toString())
+            viewModel.login(view.editTextEmail.text.toString())
         }
 
         viewModel.isSuccessLogin.observe(this,

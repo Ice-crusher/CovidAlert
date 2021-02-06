@@ -1,8 +1,7 @@
-package com.ice.domain.usecases.login
+package com.ice.domain.usecases
 
 import com.ice.domain.models.UserModel
 import com.ice.domain.repositories.RemoteRepo
-import com.ice.domain.usecases.SingleUseCase
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -11,13 +10,15 @@ class LoginUseCase @Inject constructor(
 ): SingleUseCase<LoginUseCase.Params, UserModel> {
     override fun execute(params: Params): Single<UserModel> {
         return apiRepo.login(
-            secretValue = params.secretValue,
+            email = params.email,
+            instanceId = params.instanceId,
             fcmToken = params.fcmToken
         )
     }
 
     data class Params(
-        val secretValue: String,
+        val email: String,
+        val instanceId: String,
         val fcmToken: String
     )
 }

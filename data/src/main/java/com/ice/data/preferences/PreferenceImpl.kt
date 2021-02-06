@@ -9,7 +9,8 @@ class PreferenceImpl @Inject constructor(
 
     companion object {
         const val PREF_FCM_TOKEN = "PREF_FCM_TOKEN"
-        const val PREF_USER_SECRET_VALUE = "PREF_USER_SECRET_VALUE"
+        const val PREF_USER_EMAIL = "PREF_USER_EMAIL"
+        const val PREF_INSTANCE_ID = "PREF_PREF_INSTANCE_ID"
         const val PREF_USER_ID = "PREF_USER_ID"
         const val PREF_WEB_CONTENT_LINK = "PREF_WEB_CONTENT_LINK"
         const val PREF_GPS_INFO = "PREF_GPS_INFO"
@@ -25,13 +26,13 @@ class PreferenceImpl @Inject constructor(
             .apply()
     }
 
-    override fun getSecretValue(): String {
-        return getEmptyStringOrValue(PREF_USER_SECRET_VALUE)
+    override fun getEmail(): String {
+        return getEmptyStringOrValue(PREF_USER_EMAIL)
     }
 
-    override fun setSecretValue(secretValue: String) {
+    override fun setEmail(email: String) {
         preferences.edit()
-            .putString(PREF_USER_SECRET_VALUE, secretValue)
+            .putString(PREF_USER_EMAIL, email)
             .apply()
     }
 
@@ -62,6 +63,16 @@ class PreferenceImpl @Inject constructor(
     override fun setLastGPSInfoJson(gpsInfoJson: String) {
         preferences.edit()
             .putString(PREF_GPS_INFO, gpsInfoJson)
+            .apply()
+    }
+
+    override fun getInstanceId(): String {
+        return getEmptyStringOrValue(PREF_INSTANCE_ID)
+    }
+
+    override fun setInstanceId(instanceId: String) {
+        preferences.edit()
+            .putString(PREF_INSTANCE_ID, instanceId)
             .apply()
     }
 

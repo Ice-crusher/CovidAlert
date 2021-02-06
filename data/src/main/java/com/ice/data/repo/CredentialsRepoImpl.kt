@@ -16,8 +16,8 @@ class CredentialsRepoImpl @Inject constructor(
         return preferenceHelper.getFCMToken()
     }
 
-    override fun getSecretValue(): String {
-        return preferenceHelper.getSecretValue()
+    override fun getEmail(): String {
+        return preferenceHelper.getEmail()
     }
 
     override fun getUserId(): String {
@@ -45,12 +45,16 @@ class CredentialsRepoImpl @Inject constructor(
         return null
     }
 
+    override fun getInstanceId(): String {
+        return preferenceHelper.getInstanceId()
+    }
+
     override fun setFCMToken(fcmToken: String) {
         preferenceHelper.setFCMToken(fcmToken)
     }
 
-    override fun setSecretValue(secretValue: String) {
-        preferenceHelper.setSecretValue(secretValue)
+    override fun setEmail(email: String) {
+        preferenceHelper.setEmail(email)
     }
 
     override fun setUserId(userId: String) {
@@ -74,6 +78,10 @@ class CredentialsRepoImpl @Inject constructor(
         } else {
             preferenceHelper.setLastGPSInfoJson("")
         }
-
     }
+
+    override fun setInstanceId(instanceId: String) {
+        preferenceHelper.setInstanceId(instanceId)
+    }
+
 }
