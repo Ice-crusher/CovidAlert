@@ -51,7 +51,7 @@ class MenuActivity: NearbyActivity() {
         }
 
         binding.buttonNews.setOnClickListener {
-            startActivity(MainActivity.getIntent(this))
+            startActivity(NewsActivity.getIntent(this))
         }
 
         viewModel.isLoading.observe(this,

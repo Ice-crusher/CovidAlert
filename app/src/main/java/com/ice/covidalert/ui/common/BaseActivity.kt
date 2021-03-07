@@ -1,11 +1,10 @@
 package com.ice.covidalert.ui.common
 
-import android.app.Activity
 import android.app.Dialog
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import com.ice.covidalert.utils.DisplayFormatUtils
+import com.ice.covidalert.utils.CommonUtil
 
 open class BaseActivity: FragmentActivity() {
     private var TAG = "BaseActivity"
@@ -24,7 +23,7 @@ open class BaseActivity: FragmentActivity() {
     //region show loading
     fun showLoading() {
         if(loadingDialog == null) {
-            loadingDialog = DisplayFormatUtils.makeLoadingDialog(this)
+            loadingDialog = CommonUtil.makeLoadingDialog(this)
             loadingDialog?.setOnCancelListener {
                 clickBack()
                 hideLoading()

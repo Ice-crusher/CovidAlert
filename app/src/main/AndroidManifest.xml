@@ -33,7 +33,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.main.MainActivity"
+        <activity android:name=".ui.main.NewsActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.main.MenuActivity"
